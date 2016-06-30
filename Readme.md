@@ -10,8 +10,7 @@
 
 ## Example
 
- By default assertions are enabled, however the __NO_ASSERT__ environment variable 
- will deactivate them when truthy.
+ By default assertions are enabled, however setting __window.NO_ASSERT__ to true will deactivate them.
 
 ```js
 var assert = require('better-assert');
@@ -19,8 +18,8 @@ var assert = require('better-assert');
 test();
 
 function test() {
-  var user = { name: 'tobi' };
-  assert('tobi' == user.name);
+  var user = { name: 'apples' };
+  assert('apples' == user.name);
   assert('number' == typeof user.age);
 }
 
@@ -35,27 +34,19 @@ AssertionError: 'number' == typeof user.age
     at process.startup.processNextTick.process._tickCallback (node.js:244:9)
 ```
 
-## License 
+## Browser (Chrome only?) usage (alpha status)
 
-(The MIT License)
+There's a library used here that uses what I believe is a v8/chrome specific api for interacting with function callsite's and maybe extending the stack trace limit past 10 or something.
 
-Copyright (c) 2012 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
+### __\#TLDR:__
+```
+hub clone devinrhode2/better-assert # brew install hub if u kno foo
+cd better-assert
+npm install -g watchify browserify live-server
+watchify browser-test.js -o browserified-browser-test.js
+```
+In another tab run just:`live-server`
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+Then check chrome
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+## MIT License
