@@ -1,12 +1,12 @@
 
-# better-assert
+# better-assert-browser
 
   Better c-style assertions using [callsite](https://github.com/visionmedia/callsite) for
-  self-documenting failure messages.
+  self-documenting failure messages __**IN THE BROWSER**__.
 
 ## Installation
 
-    $ npm install better-assert
+    $ npm install better-assert-browser
 
 ## Example
 

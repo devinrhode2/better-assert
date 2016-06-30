@@ -1,5 +1,3 @@
-var assert = require('./index')
-
 try {
   console.log('before calling assert')
   assert('true')

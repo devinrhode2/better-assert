@@ -15,9 +15,6 @@
         "ForbesLindesay",
         "DevinRhode2 <DevinRhode2@gmail.com>"
     ],
-    "dependencies": {
-        "callsite": "1.0.0"
-    },
     "repository": {
         "type": "git",
         "url": "https://github.com/visionmedia/better-assert.git"
