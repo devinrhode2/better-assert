@@ -8,7 +8,7 @@
 
     npm install devinrhode2/better-assert-browser --save-dev
 
-Then include node_modules/better-assert-browser/better-assert-browser.js in your page. You could also copy and paste the code from this repo, nobody's watching.
+Then include `node_modules/better-assert-browser/better-assert-browser.js` in your page. You could also copy and paste the code from this repo, nobody's watching.
 
 ## Example
 
