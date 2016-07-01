@@ -1,52 +1,58 @@
 (function(){
 
-if (!Error.prepareStackTrace) {
-  throw new Error('Error.prepareStackTrace is undefined, better-assert-browser only works in browsers supporting this function.')
-  alert('Error.prepareStackTrace is undefined, better-assert-browser only works in browsers supporting this function.')
-}
-
 /**
  * Module dependencies.
  */
 
-//copied and modified from https://github.com/nodejs/node/blob/master/lib/assert.js#L44
-function AssertionError(options) {
-  this.name = 'AssertionError'
-  this.actual = options.actual
-  this.expected = options.expected
-  this.operator = options.operator
-  this.message = options.message
-  Error.captureStackTrace(this, options.stackStartFunction || fail)
-}
-function callsite() {
-  var orig = Error.prepareStackTrace
+function getRawStacktrace() {
+  var orig = Error.prepareStackTrace //NORMALLY UNDEFINED!
+
+  //this is absolutely necessary, otherwise the stack is a regular string and lines 3,4,5 of assert will fail
   Error.prepareStackTrace = function(_, stack){ return stack }
-  var err = new Error
+  var err = new Error() //****
   Error.captureStackTrace(err, arguments.callee)
   var stack = err.stack
-  Error.prepareStackTrace = orig //make sure we don't globally modify anything,
-  //which could possibly affect other javascript
+
+  //make sure we don't globally modify anything,
+  //which could possibly affect other javascript:
+  if (orig) {
+    Error.prepareStackTrace = orig
+  } else {
+    delete Error.prepareStackTrace
+  }
+
   return stack
 }
 
-/**
- * Assert the given `expr`.
- */
+function AssertionError(options) {
+  //copied and modified from https://github.com/nodejs/node/blob/master/lib/assert.js#L44
+  this.name = 'AssertionError'
+  this.message = options.message
+  Error.captureStackTrace(this, options.stackStartFunction)
+}
 
 function assert(expr) {
   if (expr) return
-
-  var stack = callsite()
+  var stack = getRawStacktrace()
   var call = stack[1]
-  var file = call.getFileName()
   var lineno = call.getLineNumber()
-  var src = fs.readFileSync(file, 'utf8')
-  var line = src.split('\n')[lineno-1]
-  var src = line.match(/assert\((.*)\)/)[1]
 
-  throw new AssertionError({
-    message: src,
-    stackStartFunction: stack[0].getFunction()
+  fetch(call.getFileName()).then(function(response) {
+    response.text().then(function(src) {
+      var line = src.split('\n')[lineno-1]
+      console.warn('error line: "'+line+'"')
+      var message = line.match(/assert\((.*)\)/)[1]
+      console.log('message:', message)
+      //could throw "Error.captureStackTrace is not a function".
+      throw new AssertionError({
+        message: message,
+        stackStartFunction: stack[0].getFunction()
+      })
+    })
+  }).catch(function(error){
+    if (error.name === 'AssertionError') {
+      throw error
+    }
   })
 }
 
