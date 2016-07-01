@@ -2,7 +2,7 @@
 # better-assert-browser
 
   Better c-style assertions using for self-documenting
-  failure messages __**IN THE BROWSER**__.
+  failure messages __**IN THE BUHROWZA**__.
 
 ## Installation
 
