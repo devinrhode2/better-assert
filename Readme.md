@@ -1,52 +1,50 @@
 
 # better-assert-browser
 
-  Better c-style assertions using [callsite](https://github.com/visionmedia/callsite) for
-  self-documenting failure messages __**IN THE BROWSER**__.
+  Better c-style assertions using for self-documenting
+  failure messages __**IN THE BROWSER**__.
 
 ## Installation
 
-    $ npm install better-assert-browser
+    npm install devinrhode2/better-assert-browser
 
 ## Example
 
  By default assertions are enabled, however setting __window.NO_ASSERT__ to true will deactivate them.
 
 ```js
-var assert = require('better-assert');
-
-test();
-
-function test() {
-  var user = { name: 'apples' };
-  assert('apples' == user.name);
-  assert('number' == typeof user.age);
+try {
+  console.log('before calling assert')
+  assert('truthy')
+  console.log('called assert')
+  assert(window.someFoo === 'bar')
+  console.log('called with false')
+} catch (e) {
+  console.error('assert() failed:'+e.stack)
 }
-
-AssertionError: 'number' == typeof user.age
-    at test (/Users/tj/projects/better-assert/example.js:9:3)
-    at Object.<anonymous> (/Users/tj/projects/better-assert/example.js:4:1)
-    at Module._compile (module.js:449:26)
-    at Object.Module._extensions..js (module.js:467:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Module.runMain (module.js:492:10)
-    at process.startup.processNextTick.process._tickCallback (node.js:244:9)
 ```
 
-## Browser (Chrome only?) usage (alpha status)
+This library/function is dependent upon the v8/chrome stacktrace api.
 
-There's a library used here that uses what I believe is a v8/chrome specific api for interacting with function callsite's and maybe extending the stack trace limit past 10 or something.
+To get stacktraces for failed assertions, you need to check "Async" in the
+right sidebar of the chrome devtools sources pane
 
-### __\#TLDR:__
+This is because this function makes a request for the javascript file at the file url
+indicated in the stack trace using window.fetch, which returns a promise, inside this we
+throw an assertion error with the code asserted.
+
+This library won't work unless you http server respond to requests to individual files.
+
+### development setup
 ```
 hub clone devinrhode2/better-assert # brew install hub if u kno foo
 cd better-assert
-npm install -g watchify browserify live-server
-watchify browser-test.js -o browserified-browser-test.js
+npm install -g live-server
+live-server
+# then install the livereload for chrome extension
 ```
-In another tab run just:`live-server`
+Open up http://127.0.0.1:8080/browser-test.html
 
-Then check chrome
+You should then be able to open better-assert-browser.js and browser-test.js in chrome devtools sources pane, hit esc to show the console, and livedit
 
 ## MIT License

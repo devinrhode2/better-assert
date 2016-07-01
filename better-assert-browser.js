@@ -1,11 +1,21 @@
 (function(){
 
+if (!Error.captureStackTrace) {
+  throw new Error(
+  'your browser doesn\'t support the v8-first stacktrace api. '+
+  'Please search issues at github.com/devinrhode2/better-assert-browser/issues and '+
+  'open an issue to support your browser if there isn\'t one open already. '+
+  'Use chrome for better-assert-browser to work right now.')
+}
+
 /**
  * Module dependencies.
  */
 
-function getRawStacktrace() {
-  var orig = Error.prepareStackTrace //NORMALLY UNDEFINED!
+function getRawStack() { //used to be called callsite (from visionmedia)
+
+  //NORMALLY UNDEFINED!
+  var orig = Error.prepareStackTrace
 
   //this is absolutely necessary, otherwise the stack is a regular string and lines 3,4,5 of assert will fail
   Error.prepareStackTrace = function(_, stack){ return stack }
@@ -24,35 +34,28 @@ function getRawStacktrace() {
   return stack
 }
 
-function AssertionError(options) {
+function AssertionFailure(options) {
   //copied and modified from https://github.com/nodejs/node/blob/master/lib/assert.js#L44
-  this.name = 'AssertionError'
+  this.name = 'AssertionFailure'
   this.message = options.message
   Error.captureStackTrace(this, options.stackStartFunction)
 }
 
 function assert(expr) {
   if (expr) return
-  var stack = getRawStacktrace()
+  var stack = getRawStack()
   var call = stack[1]
   var lineno = call.getLineNumber()
 
-  fetch(call.getFileName()).then(function(response) {
-    response.text().then(function(src) {
-      var line = src.split('\n')[lineno-1]
-      console.warn('error line: "'+line+'"')
-      var message = line.match(/assert\((.*)\)/)[1]
-      console.log('message:', message)
-      //could throw "Error.captureStackTrace is not a function".
-      throw new AssertionError({
-        message: message,
-        stackStartFunction: stack[0].getFunction()
-      })
-    })
-  }).catch(function(error){
-    if (error.name === 'AssertionError') {
-      throw error
-    }
+  return fetch(call.getFileName()).then((response) => {
+    return response.text()
+  }).then((src) => {
+    var line = src.split('\n')[lineno-1]
+    var message = line.match(/assert\((.*)\)/)[1]
+    throw (new AssertionFailure({
+      message: message,
+      stackStartFunction: stack[0].getFunction()
+    })).stack
   })
 }
 
@@ -61,5 +64,6 @@ function assert(expr) {
  */
 
 window.assert = window.NO_ASSERT ? function(){} : assert
+
 
 })();
