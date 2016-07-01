@@ -37,8 +37,8 @@ This library won't work unless your server responds to requests for individual f
 
 ### Contributing
 ```
-hub clone devinrhode2/better-assert # brew install hub if u kno foo
-cd better-assert
+hub clone devinrhode2/better-assert-browser # brew install hub if u kno foo
+cd better-assert-browser
 npm install -g live-server
 live-server
 ```
