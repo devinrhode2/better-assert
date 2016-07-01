@@ -6,7 +6,7 @@
 
 ## Installation
 
-    npm install devinrhode2/better-assert-browser
+    npm install devinrhode2/better-assert-browser --save-dev
 
 ## Example
 
@@ -33,18 +33,17 @@ This is because this function makes a request for the javascript file at the fil
 indicated in the stack trace using window.fetch, which returns a promise, inside this we
 throw an assertion error with the code asserted.
 
-This library won't work unless you http server respond to requests to individual files.
+This library won't work unless your server responds to requests for individual files.
 
-### development setup
+### Contributing
 ```
 hub clone devinrhode2/better-assert # brew install hub if u kno foo
 cd better-assert
 npm install -g live-server
 live-server
-# then install the livereload for chrome extension
 ```
 Open up http://127.0.0.1:8080/browser-test.html
 
 You should then be able to open better-assert-browser.js and browser-test.js in chrome devtools sources pane, hit esc to show the console, and livedit
 
-## MIT License
+## MIT License, see LICENSE file
